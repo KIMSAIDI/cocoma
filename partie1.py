@@ -1,3 +1,5 @@
+import random
+
 # pseudo code pour la partie 1
 
 
