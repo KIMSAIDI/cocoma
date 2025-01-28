@@ -15,6 +15,7 @@ FPS = 60
 NUM_TAXIS = 5
 NUM_NEW_TASKS_MIN = 5
 NUM_NEW_TASKS_MAX = 10 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
+NUM_TASKS = 3
 
 # Échelle pour convertir les coordonnées
 scale = WINDOW_SIZE / GRID_SIZE
