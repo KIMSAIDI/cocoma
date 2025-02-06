@@ -126,7 +126,7 @@ def main():
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
         )
-        for _ in range(NUM_TASKS)
+        for _ in range(NUM_NEW_TASKS_MIN)
     ]
 
     # Boucle principale
