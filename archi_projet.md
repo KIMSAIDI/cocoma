@@ -14,9 +14,6 @@
 - mettre à jour la destination courrante
 - se déplacer vers la destination courrante
 
-
-
-
 ## Aspect technique
 
 - commande pour activer l'env pydcop : source ~/pydcop_env/bin/activate
