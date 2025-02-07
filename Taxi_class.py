@@ -2,6 +2,8 @@ import pygame
 import random
 
 from main_env import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
+from planing_algo import random_task_ordering, greedy_task_ordering, optimal_task_ordering
+from task_class import Task
 
 # Fonction pour dessiner du texte
 def draw_text(screen, text, x, y, color):
@@ -67,7 +69,7 @@ class Taxi:
 
         if tasks_changed:
             self.path = self.all_tasks.copy()
-            random.shuffle(self.path)
+            self.path = greedy_task_ordering(self.position, self.all_tasks)
 
 
 
@@ -82,7 +84,7 @@ class Taxi:
             self.destination = None
 
         if self.path:
-            if self.position == self.path[0].start:
+            if self.position == self.path[0].start and not self.path[0].taken:
                 self.current_task = self.path.pop(0)
                 self.current_task.take()
                 self.destination = self.current_task.end
@@ -91,31 +93,7 @@ class Taxi:
             self.destination = self.path[0].start
             return
         
-        self.destination = (GRID_SIZE // 2, GRID_SIZE // 2)
-
-
-
-
-# Class des Tâches
-class Task:
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-        self.distance = ((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2) ** 0.5
-        self.taken = False
-        self.completed = False
-
-    def draw(self, screen):
-        color = WHITE if not self.taken else BLUE
-        start_scaled = (int(self.start[0] * scale), int(self.start[1] * scale))
-        end_scaled = (int(self.end[0] * scale), int(self.end[1] * scale))
-        pygame.draw.circle(screen, GREEN, start_scaled, 3)
-        pygame.draw.circle(screen, RED, end_scaled, 3)
-        pygame.draw.line(screen, color, start_scaled, end_scaled, 2)
-
-
-    def take(self):
-        self.taken = True
-
-    def complete(self):
-        self.completed = True
+        x_noise = random.uniform(-0.5, 0.5)
+        y_noise = random.uniform(-0.5, 0.5)
+        self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
+        # self.destination = (self.position[0] + x_noise, self.position[1] + y_noise)

@@ -3,8 +3,6 @@ import pygame
 import random
 import time
 
-from Taxi_class import *
-
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 # Initialisation de Pygame
@@ -15,9 +13,9 @@ GRID_SIZE = 200
 WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
-NUM_TAXIS = 5
-NUM_NEW_TASKS_MIN = 5
-NUM_NEW_TASKS_MAX = 10 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
+NUM_TAXIS = 3
+NUM_NEW_TASKS_MIN = 3
+NUM_NEW_TASKS_MAX = 3 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
 T = 5
 
 # Échelle pour convertir les coordonnées
@@ -33,6 +31,9 @@ BLUE = (57, 88, 146)
 
 # Police pour l'affichage du texte
 FONT = pygame.font.Font(None, 24)
+
+from taxi_class import *
+from task_class import *
 
 
 def main():
