@@ -9,90 +9,66 @@ domains:
       - T3
 
 variables:
-  t21:
+  t4:
     domain: taxis
-  t22:
+  t5:
     domain: taxis
-  t23:
-    domain: taxis
-  t24:
+  t6:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t21
+    variables: t4
     values:
-      84.84443033910097: T1
-      86.10485143553281: T2
-      85.23258604653026: T3
+      28.741707675010094: T1
+      29.265793683871184: T2
+      28.929257096088516: T3
 
   pref_2:
     type: extensional
-    variables: t22
+    variables: t5
     values:
-      25.269309061428576: T1
-      67.88692169418053: T2
-      24.8362318408526: T3
+      35.44234971032735: T1
+      35.53683848001725: T2
+      35.81797813789008: T3
 
   pref_3:
     type: extensional
-    variables: t23
+    variables: t6
     values:
-      38.21683863090089: T1
-      81.35159319157512: T2
-      38.18231748146549: T3
+      116.82235936789323: T1
+      116.87598353820601: T2
+      116.52027742417577: T3
 
-  pref_4:
-    type: extensional
-    variables: t24
-    values:
-      17.938247255672568: T1
-      40.023495796610234: T2
-      18.36980249643197: T3
-
-  different_t21_t22:
+  different_t4_t5:
     type: intention
-    function: 1000 if t21 == t22 else 0
+    function: 1000 if t4 == t5 else 0
 
-  different_t21_t23:
+  different_t4_t6:
     type: intention
-    function: 1000 if t21 == t23 else 0
+    function: 1000 if t4 == t6 else 0
 
-  different_t21_t24:
+  different_t5_t6:
     type: intention
-    function: 1000 if t21 == t24 else 0
-
-  different_t22_t23:
-    type: intention
-    function: 1000 if t22 == t23 else 0
-
-  different_t22_t24:
-    type: intention
-    function: 1000 if t22 == t24 else 0
-
-  different_t23_t24:
-    type: intention
-    function: 1000 if t23 == t24 else 0
+    function: 1000 if t5 == t6 else 0
 
   cout_T1:
     type: intention
-    function: 84.84443033910097 if t21 == "T1" else 25.269309061428576 if t22 == "T1" else 38.21683863090089 if t23 == "T1" else 17.938247255672568 if t24 == "T1" else 0
+    function: 28.741707675010094 if t4 == "T1" else 35.44234971032735 if t5 == "T1" else 116.82235936789323 if t6 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 86.10485143553281 if t21 == "T2" else 67.88692169418053 if t22 == "T2" else 81.35159319157512 if t23 == "T2" else 40.023495796610234 if t24 == "T2" else 0
+    function: 29.265793683871184 if t4 == "T2" else 35.53683848001725 if t5 == "T2" else 116.87598353820601 if t6 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 85.23258604653026 if t21 == "T3" else 24.8362318408526 if t22 == "T3" else 38.18231748146549 if t23 == "T3" else 18.36980249643197 if t24 == "T3" else 0
+    function: 28.929257096088516 if t4 == "T3" else 35.81797813789008 if t5 == "T3" else 116.52027742417577 if t6 == "T3" else 0
 
 agents:
-  t21:
+  t4:
     capacity: 1
-  t22:
+  t5:
     capacity: 1
-  t23:
-    capacity: 1
-  t24:
+  t6:
     capacity: 1

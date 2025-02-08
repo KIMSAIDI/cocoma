@@ -16,8 +16,9 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 4
-NUM_NEW_TASKS_MAX = 4
+NUM_NEW_TASKS_MIN = 3
+NUM_NEW_TASKS_MAX = 3
+NUM_TOTAL_TASKS = 6
 T = 8
 MAX_UNASSIGNED_TASKS = 10  # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
@@ -52,7 +53,6 @@ class Taxi2:
     def __init__(self, position, name, path):
         self.name = name
         self.position = position
-        #self.all_tasks = [] # liste de toutes les tâches disponibles
         self.path = path # liste des tâches à effectuer
         self.current_task = None
         self.destination = None
@@ -90,10 +90,7 @@ class Taxi2:
                     self.position[0] + (dx / distance) * self.speed,
                     self.position[1] + (dy / distance) * self.speed,
                 )
-            
-            
-
-
+        
     def update_task(self):
         
         if self.current_task: # si le taxi a une tâche en cours
@@ -103,7 +100,6 @@ class Taxi2:
             self.current_task.complete()
             self.current_task = None
             self.destination = None
-            # on peut retirer dans assignement les tâches qui sont complétées
             
 
         if self.path: # si le taxi a une liste de tâches
@@ -142,19 +138,12 @@ def assign_tasks(taxis, tasks, task_cost):
         )
         str_results = result.stdout
         
-        
-        # Convertir la sortie en dictionnaire
         try:
             results_dict = json.loads(str_results)
             assignments = results_dict.get("assignment", {})
-            # Afficher les assignations
-           # print("Assignations :", assignments)
-            
-            
+           
+            # Assigner les tâches aux taxis
             for taxi in taxis:
-                # si il n'ont pas encore de tâche à faire : 
-                #if taxi.current_task == None:
-                    # les taxis sont la clés et la taches est la valeur
                 for task_name, taxi_name in assignments.items():
                     if taxi_name == taxi.name:
                         for task in tasks:
@@ -180,27 +169,32 @@ def main():
     screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Simulation de taxis")
     
+    
+    
     # Génération aléatoire de taxis et de tâches
     taxis = [
         Taxi2((random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)), f"T{i+1}", []) # liste de path à vide au début
         for i in range(NUM_TAXIS)
     ]
     tasks = [
+        
         Task(
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
             f"t{i+1}"
         )
+        
         for i in range(NUM_NEW_TASKS_MIN)
+            
     ]
+    
+    all_tasks_count = NUM_NEW_TASKS_MIN
 
     # Boucle principale
     running = True
     task_cost = {}
     clock = pygame.time.Clock()
     start = time.time()
-    # copy tasks
-    
     
     # pour chaque taxi, on calcul le coùut associé à chaque tâche
     for taxi in taxis:
@@ -214,6 +208,7 @@ def main():
     # on remet à 0 le calcul des couts des taches
     task_cost = {}
     
+    # pour s'assurer que les taches ont toutes des noms différents
     task_counter = len(tasks) + 1
     
     while running:
@@ -226,12 +221,8 @@ def main():
         screen.fill(GREY)
         
         
-        
-       
         if time.time() - start > T :
-            
             start = time.time()
-            
             num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
             new_task = []
             for i in range(num_new_tasks):
@@ -243,9 +234,10 @@ def main():
                         (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
                         # on s'assure que les noms sont uniques et avec compteur
                         task_name
-                       
+
                     )
                 )
+                all_tasks_count += 1
               
                 tasks.append(new_task[i])
                 task_counter += 1 
@@ -271,10 +263,14 @@ def main():
         for task in tasks:
             if task.completed:
                 tasks.remove(task)
-                
                 continue
             
             task.draw(screen)
+            
+        if all_tasks_count == NUM_TOTAL_TASKS and tasks == []:
+            end_time = time.time()
+            print(f"Temps total de résolution: {end_time - start:.2f} secondes")
+            running = False
 
         pygame.display.flip()
         clock.tick(FPS)
