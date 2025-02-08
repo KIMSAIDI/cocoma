@@ -14,8 +14,8 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 3
-NUM_NEW_TASKS_MAX = 3 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
+NUM_NEW_TASKS_MIN = 4
+NUM_NEW_TASKS_MAX = 4 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
 T = 5
 
 # Échelle pour convertir les coordonnées

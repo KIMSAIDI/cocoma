@@ -3,7 +3,7 @@ import math
 
 def generate_yaml_file(taxis, tasks, task_cost, name_file):
     with open(name_file, 'w') as f:
-        f.write('name: dcop_file\n')
+        f.write('name: Taxi Task Allocation Problem\n')
         f.write('objective: min\n')
         f.write('\n')
 

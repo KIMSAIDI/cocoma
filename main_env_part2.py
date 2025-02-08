@@ -16,9 +16,9 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 3
-NUM_NEW_TASKS_MAX = 3
-T = 5
+NUM_NEW_TASKS_MIN = 4
+NUM_NEW_TASKS_MAX = 4
+T = 10
 MAX_UNASSIGNED_TASKS = 10  # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
 
@@ -89,6 +89,8 @@ class Taxi2:
                     self.position[0] + (dx / distance) * self.speed,
                     self.position[1] + (dy / distance) * self.speed,
                 )
+            
+            
 
 
     def update_task(self):
@@ -100,6 +102,8 @@ class Taxi2:
             self.current_task.complete()
             self.current_task = None
             self.destination = None
+            # on peut retirer dans assignement les tâches qui sont complétées
+            
 
         if self.path: # si le taxi a une liste de tâches
             if self.position == self.path[0].start and not self.path[0].taken: # si le taxi est à la position de départ de la tâche et que la tâche n'est pas prise
@@ -145,6 +149,7 @@ def assign_tasks(taxis, tasks, task_cost):
             # Afficher les assignations
             print("Assignations :", assignments)
             
+            
             for taxi in taxis:
                 # si il n'ont pas encore de tâche à faire : 
                 if taxi.current_task == None:
@@ -154,8 +159,10 @@ def assign_tasks(taxis, tasks, task_cost):
                             for task in tasks:
                                 if task.name == task_name:
                                     taxi.path.append(task)
+                                    
                                     break
-                    
+              
+            
             
         except json.JSONDecodeError as e:
             print("Erreur lors de la conversion de la sortie en JSON :", e)
@@ -172,7 +179,7 @@ def main():
     # Initialisation de la fenêtre
     screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Simulation de taxis")
-
+    
     # Génération aléatoire de taxis et de tâches
     taxis = [
         Taxi2((random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)), f"T{i+1}", []) # liste de path à vide au début
@@ -192,6 +199,8 @@ def main():
     task_cost = {}
     clock = pygame.time.Clock()
     start = time.time()
+    # copy tasks
+    
     
     # pour chaque taxi, on calcul le coùut associé à chaque tâche
     for taxi in taxis:
@@ -199,9 +208,14 @@ def main():
         for task in tasks:
             task_cost[taxi].append(calculate_cost(taxi.position, task.start))
 
-    assign_tasks(taxis, tasks, task_cost)
     
-
+    # assignement taxi au tasks
+    assign_tasks(taxis, tasks, task_cost)
+    # on remet à 0 le calcul des couts des taches
+    task_cost = {}
+    
+    task_counter = len(tasks) + 1
+    
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -209,27 +223,44 @@ def main():
 
         # Dessin de l'environnement
         screen.fill(GREY)
-
-        # if time.time() - start > T:
-        #     start = time.time()
-        #     num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
-        #     for _ in range(num_new_tasks):
-        #         tasks.append(
-        #             Task(
-        #                 (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-        #                 (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-        #                 f"t{len(tasks)+1}"
-        #             )
-        #         )
-        #     #if len(tasks) > MAX_UNASSIGNED_TASKS:
-        #     #   tasks = [task for task in tasks if not task.completed]
-        #     assign_tasks(taxis, tasks, task_cost)
-            
-
-            
         
+        
+        
+       
+        if time.time() - start > T :
+            
+            start = time.time()
+            
+            num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
+            new_task = []
+            for i in range(num_new_tasks):
+                task_name = f"t{task_counter}"
 
+                new_task.append(
+                    Task(
+                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+                        # on s'assure que les noms sont uniques et avec compteur
+                        task_name
+                       
+                    )
+                )
+              
+                tasks.append(new_task[i])
+                task_counter += 1 
+            
+                
+            # pour chaque taxi, on calcul le coùut associé à chaque NOUVELLE tâche
+            for taxi in taxis:
+                task_cost[taxi] = []
+                for task in new_task:
+                    task_cost[taxi].append(calculate_cost(taxi.position, task.start))
 
+            # on assigne une nouvelle tâche aux taxis qui n'ont pas de current task
+            assign_tasks(taxis, new_task, task_cost)
+            task_cost = {}
+            
+            
        # Déplacement des taxis
         for taxi in taxis:
             taxi.update()
@@ -239,12 +270,15 @@ def main():
         for task in tasks:
             if task.completed:
                 tasks.remove(task)
+                
                 continue
             
             task.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)
+        
+        
 
     pygame.quit()
 
