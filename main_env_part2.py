@@ -18,9 +18,10 @@ FPS = 60
 NUM_TAXIS = 3
 NUM_NEW_TASKS_MIN = 4
 NUM_NEW_TASKS_MAX = 4
-T = 10
+T = 8
 MAX_UNASSIGNED_TASKS = 10  # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
+
 
 # Couleurs
 WHITE = (247, 247, 255)
@@ -147,22 +148,21 @@ def assign_tasks(taxis, tasks, task_cost):
             results_dict = json.loads(str_results)
             assignments = results_dict.get("assignment", {})
             # Afficher les assignations
-            print("Assignations :", assignments)
+           # print("Assignations :", assignments)
             
             
             for taxi in taxis:
                 # si il n'ont pas encore de tâche à faire : 
-                if taxi.current_task == None:
+                #if taxi.current_task == None:
                     # les taxis sont la clés et la taches est la valeur
-                    for task_name, taxi_name in assignments.items():
-                        if taxi_name == taxi.name:
-                            for task in tasks:
-                                if task.name == task_name:
-                                    taxi.path.append(task)
-                                    
-                                    break
+                for task_name, taxi_name in assignments.items():
+                    if taxi_name == taxi.name:
+                        for task in tasks:
+                            if task.name == task_name:
+                                taxi.path.append(task)
+                                
+                                break
               
-            
             
         except json.JSONDecodeError as e:
             print("Erreur lors de la conversion de la sortie en JSON :", e)
@@ -220,7 +220,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
+                
+        
         # Dessin de l'environnement
         screen.fill(GREY)
         
