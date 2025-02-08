@@ -1,7 +1,9 @@
 import pygame
 import random
 
-from main_env import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
+#from main_env import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
+from main_env_part2 import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
+
 from planing_algo import random_task_ordering, greedy_task_ordering, optimal_task_ordering
 from task_class import Task
 
@@ -13,10 +15,11 @@ def draw_text(screen, text, x, y, color):
 # Class des Taxis
 class Taxi:
 
-    def __init__(self, position):
+    def __init__(self, position, name):
+        self.name = name
         self.position = position
-        self.all_tasks = []
-        self.path = []
+        self.all_tasks = [] # liste de toutes les tâches disponibles
+        self.path = [] # liste des tâches à effectuer
         self.current_task = None
         self.destination = None
         self.task_started = False
@@ -62,7 +65,7 @@ class Taxi:
                 self.all_tasks.append(task)
                 tasks_changed = True
 
-        for task in self.all_tasks:
+        for task in self.all_tasks: # si la tâche n'est plus disponible ou déjà prise
             if task not in tasks or  task.taken:
                 self.all_tasks.remove(task)
                 tasks_changed = True
@@ -75,24 +78,25 @@ class Taxi:
 
     def update_task(self):
         
-        if self.current_task:
-            if self.position != self.current_task.end:
+        if self.current_task: # si le taxi a une tâche en cours
+            if self.position != self.current_task.end: # si le taxi n'est pas encore arrivé à la fin
                 return
             
             self.current_task.complete()
             self.current_task = None
             self.destination = None
 
-        if self.path:
-            if self.position == self.path[0].start and not self.path[0].taken:
-                self.current_task = self.path.pop(0)
+        if self.path: # si le taxi a une liste de tâches
+            if self.position == self.path[0].start and not self.path[0].taken: # si le taxi est à la position de départ de la tâche et que la tâche n'est pas prise
+                self.current_task = self.path.pop(0) # on remove la tâche de sa liste
                 self.current_task.take()
-                self.destination = self.current_task.end
+                self.destination = self.current_task.end # on met la destination à la fin de la tâche
                 return
             
-            self.destination = self.path[0].start
+            self.destination = self.path[0].start # sinon on met la destination à la position de départ de la tâche
             return
         
+        # Si le taxi n'a plus de tâche à effectuer
         x_noise = random.uniform(-0.5, 0.5)
         y_noise = random.uniform(-0.5, 0.5)
         self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)

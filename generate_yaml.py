@@ -1,66 +1,67 @@
 import yaml
+import math
 
-def generate_dcop_yaml(taxis, tasks, taxi_costs, filename='partie2.yaml'):
-    dcop_data = {
-        'name': 'dcop_file',
-        'objective': 'min',
-        'domains': {
-            'taches': {
-                'values': tasks
-            }
-        },
-        'variables': {},
-        'constraints': [],
-        'agents': []
-    }
+def generate_yaml_file(taxis, tasks, task_cost, name_file):
+    with open(name_file, 'w') as f:
+        f.write('name: dcop_file\n')
+        f.write('objective: min\n')
+        f.write('\n')
 
-    # les taxis sont les variables avec le domaine des tâches
-    for taxi in taxis:
-        dcop_data['variables'][taxi] = {
-            'domain': 'taches'
-        }
+        # Domaines
+        f.write('domains:\n')
+        f.write('  taxis:\n')
+        f.write('    values:\n')
+        for taxi in taxis:
+            f.write(f'      - {taxi.name}\n')
+        f.write('\n')
 
-    # les contraintes de coût pour chaque taxi
-    for idx, taxi in enumerate(taxis):
-        # pour ajouter tout les coûts
-        cost_data = {
-            f'cout{idx + 1}': {
-                'type': 'extensional',
-                'variables': taxi,
-                'values': {}
-            }
-        }
-        # 
-        for task, cost in taxi_costs[taxi].items():
-            # on ajoutes tout les coûts différents de chaque tâches pour le taxi de la boucle
-            cost_data[f'cout{idx + 1}']['values'][cost] = task
-        dcop_data['constraints'].append(cost_data)
+        # Variables
+        f.write('variables:\n')
+        for task in tasks:
+            f.write(f'  {task.name}:\n')
+            f.write('    domain: taxis\n')
+        f.write('\n')
 
-    # contrainte pour assurer que chaque taxi a sa propre tâche
-    if len(taxis) > 1:
-        for i in range(len(taxis)):
-            for j in range(i + 1, len(taxis)):
-                dcop_data['constraints'].append({
-                    f'diff_{i+1}_{j+1}': {
-                        'type': 'intention',
-                        'function': f'10 if {taxis[i]} == {taxis[j]} else 0'
-                    }
-                })
+        # Contraintes de préférence (coût)
+        f.write('constraints:\n')
+        for i, task in enumerate(tasks):
+            f.write(f'  pref_{i + 1}:\n')
+            f.write('    type: extensional\n')
+            f.write(f'    variables: {task.name}\n')
+            f.write('    values:\n')
+            for j, taxi in enumerate(taxis):
+                cost = task_cost[taxi][i]  # Coût pour ce taxi et cette tâche
+                f.write(f'      {cost}: {taxi.name}\n')
+            f.write('\n')
 
-    # on assigner un agent pour chaque taxi
-    for idx, taxi in enumerate(taxis):
-        dcop_data['agents'].append(f'a{idx + 1}')
+        # Contraintes pour éviter que deux tâches soient assignées au même taxi
+        for i, task1 in enumerate(tasks):
+            for j, task2 in enumerate(tasks):
+                if i < j:
+                    f.write(f'  different_{task1.name}_{task2.name}:\n')
+                    f.write('    type: intention\n')
+                    f.write(f'    function: 1000 if {task1.name} == {task2.name} else 0\n')
+                    f.write('\n')
 
-    # Écriture dans un fichier YAML
-    with open(filename, 'w') as file:
-        yaml.dump(dcop_data, file, default_flow_style=False)
+        # Contraintes de coût pour chaque taxi
+        for i, taxi in enumerate(taxis):
+            f.write(f'  cout_{taxi.name}:\n')
+            f.write('    type: intention\n')
+            f.write(f'    function: {task_cost[taxi][0]} if {tasks[0].name} == "{taxi.name}"')
+            for j in range(1, len(tasks)):
+                f.write(f' else {task_cost[taxi][j]} if {tasks[j].name} == "{taxi.name}"')
+            f.write(' else 0\n')
+            f.write('\n')
 
-# Exemple d'utilisation
-taxis = ['T1', 'T2']
-tasks = ['t1', 't2', 't3']
-taxi_costs = {
-    'T1': {1: 't1', 2: 't2', 3: 't3'},
-    'T2': {2: 't1', 0: 't2', 1: 't3'}
-}
-
-generate_dcop_yaml(taxis, tasks, taxi_costs)
+        # Agents
+        f.write('agents:\n')
+        for task in tasks:
+            f.write(f'  {task.name}:\n')
+            f.write('    capacity: 1\n')
+    
+    
+    
+    
+def calculate_cost(position, task):
+    # position est la position du taxi et task est la position de DEPART de la tache
+    return math.sqrt((position[0] - task[0])**2 + (position[1] - task[1])**2)

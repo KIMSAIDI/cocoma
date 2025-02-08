@@ -1,10 +1,13 @@
 import pygame
 
-from main_env import WHITE, GREEN, RED, BLUE, scale
+#from main_env import WHITE, GREEN, RED, BLUE, scale
+from main_env_part2 import WHITE, GREEN, RED, BLUE, scale
+
 
 # Class des Tâches
 class Task:
-    def __init__(self, start, end):
+    def __init__(self, start, end, name):
+        self.name = name
         self.start = start
         self.end = end
         self.distance = ((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2) ** 0.5

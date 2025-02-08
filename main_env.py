@@ -32,7 +32,7 @@ BLUE = (57, 88, 146)
 # Police pour l'affichage du texte
 FONT = pygame.font.Font(None, 24)
 
-from taxi_class import *
+from Taxi_class import *
 from task_class import *
 
 
@@ -43,15 +43,16 @@ def main():
 
     # Génération aléatoire de taxis et de tâches
     taxis = [
-        Taxi((random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)))
-        for _ in range(NUM_TAXIS)
+        Taxi((random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)), f"T{i+1}")
+        for i in range(NUM_TAXIS)
     ]
     tasks = [
         Task(
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+            f"t{i+1}"
         )
-        for _ in range(NUM_NEW_TASKS_MIN)
+        for i in range(NUM_NEW_TASKS_MIN)
     ]
 
     # Boucle principale
@@ -75,6 +76,7 @@ def main():
                     Task(
                         (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
                         (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+                        f"t{len(tasks)+1}"
                     )
                 )
 

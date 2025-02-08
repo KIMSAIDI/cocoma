@@ -18,3 +18,5 @@
 
 - commande pour activer l'env pydcop : source ~/pydcop_env/bin/activate
 - commande pour lancer le fichier .yaml : pydcop solve --algo dpop pydcop_file.yaml
+
+- cd /mnt/c/
