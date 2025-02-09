@@ -9,90 +9,66 @@ domains:
       - T3
 
 variables:
-  t93:
+  t4:
     domain: taxis
-  t94:
+  t5:
     domain: taxis
-  t95:
-    domain: taxis
-  t96:
+  t6:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t93
+    variables: t4
     values:
-      73.60189626558179: T1
-      73.672493087355: T2
-      73.44089973501931: T3
+      78.46436627100445: T1
+      78.77549587141283: T2
+      78.5520986005316: T3
 
   pref_2:
     type: extensional
-    variables: t94
+    variables: t5
     values:
-      33.28935425201079: T1
-      33.98528183987032: T2
-      33.59030660295032: T3
+      109.15830710096982: T1
+      109.24046887281591: T2
+      108.55518521055644: T3
 
   pref_3:
     type: extensional
-    variables: t95
+    variables: t6
     values:
-      46.50541666148394: T1
-      45.91385608568548: T2
-      46.13894293015633: T3
+      105.46640472921364: T1
+      105.34291750167569: T2
+      106.0876530103467: T3
 
-  pref_4:
-    type: extensional
-    variables: t96
-    values:
-      65.58185380428327: T1
-      65.11225588074876: T2
-      65.22910719752727: T3
-
-  different_t93_t94:
+  different_t4_t5:
     type: intention
-    function: 1000 if t93 == t94 else 0
+    function: 1000 if t4 == t5 else 0
 
-  different_t93_t95:
+  different_t4_t6:
     type: intention
-    function: 1000 if t93 == t95 else 0
+    function: 1000 if t4 == t6 else 0
 
-  different_t93_t96:
+  different_t5_t6:
     type: intention
-    function: 1000 if t93 == t96 else 0
-
-  different_t94_t95:
-    type: intention
-    function: 1000 if t94 == t95 else 0
-
-  different_t94_t96:
-    type: intention
-    function: 1000 if t94 == t96 else 0
-
-  different_t95_t96:
-    type: intention
-    function: 1000 if t95 == t96 else 0
+    function: 1000 if t5 == t6 else 0
 
   cout_T1:
     type: intention
-    function: 73.60189626558179 if t93 == "T1" else 33.28935425201079 if t94 == "T1" else 46.50541666148394 if t95 == "T1" else 65.58185380428327 if t96 == "T1" else 0
+    function: 78.46436627100445 if t4 == "T1" else 109.15830710096982 if t5 == "T1" else 105.46640472921364 if t6 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 73.672493087355 if t93 == "T2" else 33.98528183987032 if t94 == "T2" else 45.91385608568548 if t95 == "T2" else 65.11225588074876 if t96 == "T2" else 0
+    function: 78.77549587141283 if t4 == "T2" else 109.24046887281591 if t5 == "T2" else 105.34291750167569 if t6 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 73.44089973501931 if t93 == "T3" else 33.59030660295032 if t94 == "T3" else 46.13894293015633 if t95 == "T3" else 65.22910719752727 if t96 == "T3" else 0
+    function: 78.5520986005316 if t4 == "T3" else 108.55518521055644 if t5 == "T3" else 106.0876530103467 if t6 == "T3" else 0
 
 agents:
-  t93:
+  t4:
     capacity: 1
-  t94:
+  t5:
     capacity: 1
-  t95:
-    capacity: 1
-  t96:
+  t6:
     capacity: 1

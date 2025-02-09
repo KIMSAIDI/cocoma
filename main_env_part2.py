@@ -5,6 +5,7 @@ import time
 import yaml
 import subprocess
 import json
+import copy
 
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
@@ -16,9 +17,9 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 4
-NUM_NEW_TASKS_MAX = 4
-NUM_TOTAL_TASKS = 16
+NUM_NEW_TASKS_MIN = 3
+NUM_NEW_TASKS_MAX = 3
+NUM_TOTAL_TASKS = 6
 T = 10
   # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
@@ -121,8 +122,8 @@ class Taxi2:
 
 
 
-# fonction qui appel generate_file_yaml et assigner les nouvelles tâches au taxis
-def assign_tasks(taxis, tasks, task_cost):
+# ----------------- ALGO DPOP -----------------
+def assign_tasks_with_dpop(taxis, tasks, task_cost):
     
     generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
     
@@ -142,16 +143,42 @@ def assign_tasks(taxis, tasks, task_cost):
         try:
             results_dict = json.loads(str_results)
             assignments = results_dict.get("assignment", {})
+                  
+            return assignments
+             
+        except json.JSONDecodeError as e:
+            print("Erreur lors de la conversion de la sortie en JSON :", e)
+            print("Sortie brute de pydcop :", str_results)
+        
+    except subprocess.CalledProcessError as e:
+        print("Erreur lors de l'exécution de pydcop solve :", e)
+        print("Sortie d'erreur :", e.stderr)
            
-            # Assigner les tâches aux taxis
-            for taxi in taxis:
-                for task_name, taxi_name in assignments.items():
-                    if taxi_name == taxi.name:
-                        for task in tasks:
-                            if task.name == task_name:
-                                taxi.path.append(task)
-                                
-                                break
+           
+                
+
+# ------------------ ALGO DSA ------------------
+def assign_tasks_with_dsa(taxis, tasks, task_cost):
+    
+    generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
+    
+    with open("dcop.yaml", "r", encoding="utf-8") as f:
+        dcop_str = f.read()  # Lire le contenu du fichier
+
+    dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
+    
+    try:
+        result = subprocess.run(
+            ["pydcop", "--timeout", "2", "solve", "--algo", "dsa", "dcop.yaml"],
+            capture_output=True, text=True, check=True
+        )
+        str_results = result.stdout
+        
+        try:
+            results_dict = json.loads(str_results)
+            assignments = results_dict.get("assignment", {})
+                     
+            return assignments
               
             
         except json.JSONDecodeError as e:
@@ -163,34 +190,20 @@ def assign_tasks(taxis, tasks, task_cost):
         print("Erreur lors de l'exécution de pydcop solve :", e)
         print("Sortie d'erreur :", e.stderr)
                 
+                
+def lance_simulation(tasks, algo, all_new_tasks):
     
-
-def main():
     # Initialisation de la fenêtre
     screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
     pygame.display.set_caption("Simulation de taxis")
     
-    
-    
-    # Génération aléatoire de taxis et de tâches
     taxis = [
         Taxi2((random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)), f"T{i+1}", []) # liste de path à vide au début
         for i in range(NUM_TAXIS)
     ]
-    tasks = [
-        
-        Task(
-            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            f"t{i+1}"
-        )
-        
-        for i in range(NUM_NEW_TASKS_MIN)
-            
-    ]
     
     all_tasks_count = NUM_NEW_TASKS_MIN
-
+    
     # Boucle principale
     running = True
     task_cost = {}
@@ -203,60 +216,74 @@ def main():
         for task in tasks:
             task_cost[taxi].append(calculate_cost(taxi.position, task.start))
 
+    if algo == "dsa":
+        assignments = assign_tasks_with_dsa(taxis, tasks, task_cost)
+    elif algo == "dpop":
+        assignments = assign_tasks_with_dpop(taxis, tasks, task_cost)
+        
     
-    # assignement taxi au tasks
-    assign_tasks(taxis, tasks, task_cost)
+    # Assigner les tâches aux taxis
+    for taxi in taxis:
+        for task_name, taxi_name in assignments.items():
+            if taxi_name == taxi.name:
+                for task in tasks:
+                    if task.name == task_name:
+                        taxi.path.append(task)                       
+                        break
+    
     # on remet à 0 le calcul des couts des taches
     task_cost = {}
-    
     # pour s'assurer que les taches ont toutes des noms différents
-    task_counter = len(tasks) + 1
     
+    cpt = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                
-        
+                #continue
+          
         # Dessin de l'environnement
-        screen.fill(GREY)
-        
-        
-        if time.time() - start > T :
+        screen.fill(GREY)      
+                
+        if time.time() - start > T and all_tasks_count < NUM_TOTAL_TASKS:
             start = time.time()
-            num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
-            new_task = []
-            for i in range(num_new_tasks):
-                task_name = f"t{task_counter}"
-
-                new_task.append(
-                    Task(
-                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                        # on s'assure que les noms sont uniques et avec compteur
-                        task_name
-
-                    )
-                )
-                all_tasks_count += 1
-              
-                tasks.append(new_task[i])
-                task_counter += 1 
+            
+            
+            new_tasks = all_new_tasks[cpt]
+            tasks.extend(new_tasks)
+            
+            
+            all_tasks_count += len(new_tasks)
             
                 
             # pour chaque taxi, on calcul le coùut associé à chaque NOUVELLE tâche
             for taxi in taxis:
                 task_cost[taxi] = []
-                for task in new_task:
+                for task in new_tasks:
                     task_cost[taxi].append(calculate_cost(taxi.position, task.start))
 
             # on assigne une nouvelle tâche aux taxis qui n'ont pas de current task
-            assign_tasks(taxis, new_task, task_cost)
-            task_cost = {}
+            if algo == "dsa":
+                assignments = assign_tasks_with_dsa(taxis, new_tasks, task_cost)
+            elif algo == "dpop":
+                assignments = assign_tasks_with_dpop(taxis, new_tasks, task_cost)
+                
             
+            # Assigner les tâches aux taxis
+            for taxi in taxis:
+                for task_name, taxi_name in assignments.items():
+                    if taxi_name == taxi.name:
+                        for task in tasks:
+                            if task.name == task_name:
+                                taxi.path.append(task)                       
+                                break
             
-       # Déplacement des taxis
+            cpt+=1    
+        
+        
+        # Déplacement des taxis
         for taxi in taxis:
+            
             taxi.update()
             taxi.draw(screen)
 
@@ -265,20 +292,87 @@ def main():
             if task.completed:
                 tasks.remove(task)
                 continue
-            
             task.draw(screen)
             
         if all_tasks_count == NUM_TOTAL_TASKS and tasks == []:
+            
             end_time = time.time()
             print(f"Temps total de résolution: {end_time - start:.2f} secondes")
             running = False
+            
+            
 
         pygame.display.flip()
         clock.tick(FPS)
-        
-        
+    
+    
+    
+    
+    
+    
+    
+      
 
+def main():
+     
+    # ----------------- Generation taches initales -----------------
+    tasks = [
+        Task(
+            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+            f"t{i+1}"
+        )
+        for i in range(NUM_NEW_TASKS_MIN)   
+    ]
+    
+    task_copy = copy.deepcopy(tasks) # copy pour le deuxième algo
+    
+    
+    # ----------------- Generation taches pour tout les T temps -----------------
+    all_new_tasks = []
+    task_counter = len(tasks) + 1
+    
+    for index in range(0, NUM_TOTAL_TASKS - NUM_NEW_TASKS_MIN):
+        # Pour tout les T pas de temps, on initialise déjà les taches pour chaque algo
+        num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
+        new_task = []
+        for i in range(num_new_tasks):
+            task_name = f"t{task_counter}"
+
+            new_task.append(
+                Task(
+                    (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+                    (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+                    # on s'assure que les noms sont uniques et avec compteur
+                    task_name
+
+                )
+            )
+          
+            task_counter += 1 
+                     
+        all_new_tasks.append(new_task)
+    
+    all_new_tasks_copy = copy.deepcopy(all_new_tasks) # copy pour le deuxième algo
+    
+    print("Simulation avec DSA")
+    lance_simulation(tasks, "dsa", all_new_tasks)
+    
+    
+    
+    print("Simulation avec DPOP")
+    lance_simulation(task_copy, "dpop", all_new_tasks_copy)
+    
+    
+    
     pygame.quit()
+    
+
+    
+        
+            
+            
+             
 
 
 if __name__ == "__main__":
