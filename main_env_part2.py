@@ -16,11 +16,11 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 3
-NUM_NEW_TASKS_MAX = 3
-NUM_TOTAL_TASKS = 6
-T = 8
-MAX_UNASSIGNED_TASKS = 10  # Limite le nombre de tâches non prises
+NUM_NEW_TASKS_MIN = 4
+NUM_NEW_TASKS_MAX = 4
+NUM_TOTAL_TASKS = 16
+T = 10
+  # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
 
 
@@ -136,6 +136,7 @@ def assign_tasks(taxis, tasks, task_cost):
             ["pydcop", "solve", "--algo", "dpop", "dcop.yaml"],
             capture_output=True, text=True, check=True
         )
+        
         str_results = result.stdout
         
         try:

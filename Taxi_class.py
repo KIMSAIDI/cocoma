@@ -4,6 +4,7 @@ import random
 #from main_env import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
 from main_env_part2 import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
 
+
 from planing_algo import random_task_ordering, greedy_task_ordering, optimal_task_ordering
 from task_class import Task
 
