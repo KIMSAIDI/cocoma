@@ -2,16 +2,11 @@ import pygame
 import random
 
 #from main_env import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
-from main_env_part2 import GRID_SIZE, TAXI_RADIUS, scale, WHITE, GREY, YELLOW, RED, GREEN, BLUE, FONT
+from utils import *
 
 
 from planing_algo import random_task_ordering, greedy_task_ordering, optimal_task_ordering
 from task_class import Task
-
-# Fonction pour dessiner du texte
-def draw_text(screen, text, x, y, color):
-    text_surface = FONT.render(text, True, color)
-    screen.blit(text_surface, (x, y))
 
 # Class des Taxis
 class Taxi:
@@ -25,6 +20,12 @@ class Taxi:
         self.destination = None
         self.task_started = False
         self.speed = 1
+
+    def __str__(self):
+        return f"Taxi {self.name}"
+
+    def __repr__(self):
+        return f"Taxi {self.name}"
 
     def update(self):
         self.update_task()
@@ -42,7 +43,10 @@ class Taxi:
                 int(self.destination[0] * scale),
                 int(self.destination[1] * scale),
             )
-            text = f"Dest: {dest_scaled[0]}, {dest_scaled[1]}"
+            if len(self.path) > 0:
+                text = f"{self.name}, task: {self.path[0].id}"
+            else:
+                text = f"{self.name}"
             draw_text(screen, text, pos_scaled[0], pos_scaled[1] - 15, WHITE)
 
     def move(self, destination):
@@ -71,11 +75,21 @@ class Taxi:
                 self.all_tasks.remove(task)
                 tasks_changed = True
 
-        if tasks_changed:
-            self.path = self.all_tasks.copy()
-            self.path = greedy_task_ordering(self.position, self.all_tasks)
+        # if tasks_changed:
+            # self.path = self.all_tasks.copy()
+            # Partie 1
+            # self.path = greedy_task_ordering(self.position, self.all_tasks)
+            # Partie 3
+            # Les tâches sont maintenant attribuées par enchères
 
+    def check_task3(self, tasks):
+        self.path = optimal_task_ordering(self.position, self.path)
 
+    def has_task(self, task):
+        return task in self.path
+
+    def remove_task(self, task):
+        self.path.remove(task)
 
     def update_task(self):
         
@@ -100,5 +114,7 @@ class Taxi:
         # Si le taxi n'a plus de tâche à effectuer
         x_noise = random.uniform(-0.5, 0.5)
         y_noise = random.uniform(-0.5, 0.5)
-        self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
+        # self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
         # self.destination = (self.position[0] + x_noise, self.position[1] + y_noise)
+
+    
