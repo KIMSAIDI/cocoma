@@ -1,4 +1,4 @@
-name: Taxi Task Allocation Problem
+name: dcop
 objective: min
 
 domains:
@@ -9,118 +9,118 @@ domains:
       - T3
 
 variables:
-  t16:
+  t1:
     domain: taxis
-  t17:
+  t2:
     domain: taxis
-  t18:
+  t3:
     domain: taxis
-  t19:
+  t4:
     domain: taxis
-  t20:
+  t5:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t16
+    variables: t1
     values:
-      120.22030832022756: T1
-      91.42275779365016: T2
-      94.77943385196632: T3
+      51.088159097779204: T1
+      42.05948168962618: T2
+      29.410882339705484: T3
 
   pref_2:
     type: extensional
-    variables: t17
+    variables: t2
     values:
-      26.60284125675416: T1
-      39.14872522334559: T2
-      63.25113240520649: T3
+      119.63277142990545: T1
+      111.30588483993108: T2
+      101.71037311896953: T3
 
   pref_3:
     type: extensional
-    variables: t18
+    variables: t3
     values:
-      182.6496620853815: T1
-      176.91053858243683: T2
-      92.99617418588863: T3
+      89.00561780022652: T1
+      139.6030085635693: T2
+      86.40023148117139: T3
 
   pref_4:
     type: extensional
-    variables: t19
+    variables: t4
     values:
-      170.1258200771038: T1
-      154.26562144639567: T2
-      91.32372666635689: T3
+      80.62257748298549: T1
+      164.57521077003062: T2
+      94.57801012920498: T3
 
   pref_5:
     type: extensional
-    variables: t20
+    variables: t5
     values:
-      198.88668800224676: T1
-      204.19050870599264: T2
-      116.89931780111957: T3
+      40.26164427839479: T1
+      52.3450093132096: T2
+      22.627416997969522: T3
 
-  different_t16_t17:
+  different_t1_t2:
     type: intention
-    function: 1000 if t16 == t17 else 0
+    function: 1000 if t1 == t2 else 0
 
-  different_t16_t18:
+  different_t1_t3:
     type: intention
-    function: 1000 if t16 == t18 else 0
+    function: 1000 if t1 == t3 else 0
 
-  different_t16_t19:
+  different_t1_t4:
     type: intention
-    function: 1000 if t16 == t19 else 0
+    function: 1000 if t1 == t4 else 0
 
-  different_t16_t20:
+  different_t1_t5:
     type: intention
-    function: 1000 if t16 == t20 else 0
+    function: 1000 if t1 == t5 else 0
 
-  different_t17_t18:
+  different_t2_t3:
     type: intention
-    function: 1000 if t17 == t18 else 0
+    function: 1000 if t2 == t3 else 0
 
-  different_t17_t19:
+  different_t2_t4:
     type: intention
-    function: 1000 if t17 == t19 else 0
+    function: 1000 if t2 == t4 else 0
 
-  different_t17_t20:
+  different_t2_t5:
     type: intention
-    function: 1000 if t17 == t20 else 0
+    function: 1000 if t2 == t5 else 0
 
-  different_t18_t19:
+  different_t3_t4:
     type: intention
-    function: 1000 if t18 == t19 else 0
+    function: 1000 if t3 == t4 else 0
 
-  different_t18_t20:
+  different_t3_t5:
     type: intention
-    function: 1000 if t18 == t20 else 0
+    function: 1000 if t3 == t5 else 0
 
-  different_t19_t20:
+  different_t4_t5:
     type: intention
-    function: 1000 if t19 == t20 else 0
+    function: 1000 if t4 == t5 else 0
 
   cout_T1:
     type: intention
-    function: 120.22030832022756 if t16 == "T1" else 26.60284125675416 if t17 == "T1" else 182.6496620853815 if t18 == "T1" else 170.1258200771038 if t19 == "T1" else 198.88668800224676 if t20 == "T1" else 0
+    function: 51.088159097779204 if t1 == "T1" else 119.63277142990545 if t2 == "T1" else 89.00561780022652 if t3 == "T1" else 80.62257748298549 if t4 == "T1" else 40.26164427839479 if t5 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 91.42275779365016 if t16 == "T2" else 39.14872522334559 if t17 == "T2" else 176.91053858243683 if t18 == "T2" else 154.26562144639567 if t19 == "T2" else 204.19050870599264 if t20 == "T2" else 0
+    function: 42.05948168962618 if t1 == "T2" else 111.30588483993108 if t2 == "T2" else 139.6030085635693 if t3 == "T2" else 164.57521077003062 if t4 == "T2" else 52.3450093132096 if t5 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 94.77943385196632 if t16 == "T3" else 63.25113240520649 if t17 == "T3" else 92.99617418588863 if t18 == "T3" else 91.32372666635689 if t19 == "T3" else 116.89931780111957 if t20 == "T3" else 0
+    function: 29.410882339705484 if t1 == "T3" else 101.71037311896953 if t2 == "T3" else 86.40023148117139 if t3 == "T3" else 94.57801012920498 if t4 == "T3" else 22.627416997969522 if t5 == "T3" else 0
 
 agents:
-  t16:
+  t1:
     capacity: 1
-  t17:
+  t2:
     capacity: 1
-  t18:
+  t3:
     capacity: 1
-  t19:
+  t4:
     capacity: 1
-  t20:
+  t5:
     capacity: 1
