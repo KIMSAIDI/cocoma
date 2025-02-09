@@ -17,10 +17,10 @@ WINDOW_SIZE = 800
 TAXI_RADIUS = 5
 FPS = 60
 NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 3
-NUM_NEW_TASKS_MAX = 3
-NUM_TOTAL_TASKS = 6
-T = 10
+NUM_NEW_TASKS_MIN = 5
+NUM_NEW_TASKS_MAX = 5
+NUM_TOTAL_TASKS = 20
+T = 8
   # Limite le nombre de tâches non prises
 scale = WINDOW_SIZE / GRID_SIZE
 
@@ -117,21 +117,18 @@ class Taxi2:
         x_noise = random.uniform(-0.5, 0.5)
         y_noise = random.uniform(-0.5, 0.5)
         self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
-        # self.destination = (self.position[0] + x_noise, self.position[1] + y_noise)
-
+       
 
 
 
 # ----------------- ALGO DPOP -----------------
+
 def assign_tasks_with_dpop(taxis, tasks, task_cost):
     
     generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
-    
     with open("dcop.yaml", "r", encoding="utf-8") as f:
         dcop_str = f.read()  # Lire le contenu du fichier
-
     dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
-    
     try:
         result = subprocess.run(
             ["pydcop", "solve", "--algo", "dpop", "dcop.yaml"],
@@ -154,19 +151,16 @@ def assign_tasks_with_dpop(taxis, tasks, task_cost):
         print("Erreur lors de l'exécution de pydcop solve :", e)
         print("Sortie d'erreur :", e.stderr)
            
-           
-                
+                     
 
 # ------------------ ALGO DSA ------------------
+
 def assign_tasks_with_dsa(taxis, tasks, task_cost):
     
     generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
-    
     with open("dcop.yaml", "r", encoding="utf-8") as f:
         dcop_str = f.read()  # Lire le contenu du fichier
-
     dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
-    
     try:
         result = subprocess.run(
             ["pydcop", "--timeout", "2", "solve", "--algo", "dsa", "dcop.yaml"],
@@ -203,6 +197,8 @@ def lance_simulation(tasks, algo, all_new_tasks):
     ]
     
     all_tasks_count = NUM_NEW_TASKS_MIN
+    total_resolution_dsa_time = 0
+    total_resolution_dpop_time = 0
     
     # Boucle principale
     running = True
@@ -217,9 +213,16 @@ def lance_simulation(tasks, algo, all_new_tasks):
             task_cost[taxi].append(calculate_cost(taxi.position, task.start))
 
     if algo == "dsa":
+        start_dsa = time.time()
         assignments = assign_tasks_with_dsa(taxis, tasks, task_cost)
+        dsa_time = time.time() - start_dsa
+        total_resolution_dsa_time += dsa_time
+        
     elif algo == "dpop":
+        start_dpop = time.time()
         assignments = assign_tasks_with_dpop(taxis, tasks, task_cost)
+        dpop_time = time.time() - start_dpop
+        total_resolution_dpop_time += dpop_time
         
     
     # Assigner les tâches aux taxis
@@ -240,7 +243,7 @@ def lance_simulation(tasks, algo, all_new_tasks):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                #continue
+                
           
         # Dessin de l'environnement
         screen.fill(GREY)      
@@ -248,11 +251,11 @@ def lance_simulation(tasks, algo, all_new_tasks):
         if time.time() - start > T and all_tasks_count < NUM_TOTAL_TASKS:
             start = time.time()
             
-            
+            # on prend les nouvelles tacches
             new_tasks = all_new_tasks[cpt]
             tasks.extend(new_tasks)
             
-            
+            # on met à jour le nombre total de taches
             all_tasks_count += len(new_tasks)
             
                 
@@ -278,12 +281,12 @@ def lance_simulation(tasks, algo, all_new_tasks):
                                 taxi.path.append(task)                       
                                 break
             
+            # compteur pour les nouvelles taches
             cpt+=1    
         
         
         # Déplacement des taxis
         for taxi in taxis:
-            
             taxi.update()
             taxi.draw(screen)
 
@@ -297,7 +300,11 @@ def lance_simulation(tasks, algo, all_new_tasks):
         if all_tasks_count == NUM_TOTAL_TASKS and tasks == []:
             
             end_time = time.time()
-            print(f"Temps total de résolution: {end_time - start:.2f} secondes")
+            print(f"Temps total pour la qualités des solutions: {end_time - start:.2f} secondes")
+            if algo == "dpop":
+                print(f"Temps total pour la résolution DPOP: {total_resolution_dpop_time:.2f} secondes")
+            elif algo == "dsa":
+                print(f"Temps total pour la résolution DSA: {total_resolution_dsa_time:.2f} secondes")
             running = False
             
             
@@ -314,6 +321,8 @@ def lance_simulation(tasks, algo, all_new_tasks):
       
 
 def main():
+    
+    # ----------------- POUR QUE LES ALGOS AIENT LES MEMES TACHES -----------------
      
     # ----------------- Generation taches initales -----------------
     tasks = [
@@ -355,10 +364,14 @@ def main():
     
     all_new_tasks_copy = copy.deepcopy(all_new_tasks) # copy pour le deuxième algo
     
+    
+    # ------------------- Simulation avec DSA -------------------   
+    
     print("Simulation avec DSA")
     lance_simulation(tasks, "dsa", all_new_tasks)
     
     
+    # ------------------- Simulation avec DPOP -------------------
     
     print("Simulation avec DPOP")
     lance_simulation(task_copy, "dpop", all_new_tasks_copy)
