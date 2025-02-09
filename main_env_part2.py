@@ -267,9 +267,15 @@ def lance_simulation(tasks, algo, all_new_tasks):
 
             # on assigne une nouvelle tâche aux taxis qui n'ont pas de current task
             if algo == "dsa":
+                start_dsa = time.time()
                 assignments = assign_tasks_with_dsa(taxis, new_tasks, task_cost)
+                dsa_time = time.time() - start_dsa
+                total_resolution_dsa_time += dsa_time
             elif algo == "dpop":
+                start_dpop = time.time()
                 assignments = assign_tasks_with_dpop(taxis, new_tasks, task_cost)
+                dpop_time = time.time() - start_dpop
+                total_resolution_dpop_time += dpop_time
                 
             
             # Assigner les tâches aux taxis
