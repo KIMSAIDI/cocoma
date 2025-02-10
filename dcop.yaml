@@ -1,4 +1,4 @@
-name: Taxi Task Allocation Problem
+name: dcop
 objective: min
 
 domains:
@@ -9,66 +9,66 @@ domains:
       - T3
 
 variables:
-  t10:
+  t3:
     domain: taxis
-  t11:
+  t4:
     domain: taxis
-  t12:
+  t5:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t10
+    variables: t3
     values:
-      107.25466225891938: T1
-      31.278612105966968: T2
-      51.86209062333197: T3
+      143.0: T1
+      108.90362712049586: T2
+      173.4041521994211: T3
 
   pref_2:
     type: extensional
-    variables: t11
+    variables: t4
     values:
-      68.4210844070883: T1
-      98.45851211248304: T2
-      33.91270911242517: T3
+      165.0242406436097: T1
+      188.52055590836773: T2
+      105.32331175955302: T3
 
   pref_3:
     type: extensional
-    variables: t12
+    variables: t5
     values:
-      107.92661485129385: T1
-      58.46760446143581: T2
-      23.739408855792934: T3
+      55.90169943749474: T1
+      128.69343417595164: T2
+      83.21658488546619: T3
 
-  different_t10_t11:
+  different_t3_t4:
     type: intention
-    function: 1000 if t10 == t11 else 0
+    function: 1000 if t3 == t4 else 0
 
-  different_t10_t12:
+  different_t3_t5:
     type: intention
-    function: 1000 if t10 == t12 else 0
+    function: 1000 if t3 == t5 else 0
 
-  different_t11_t12:
+  different_t4_t5:
     type: intention
-    function: 1000 if t11 == t12 else 0
+    function: 1000 if t4 == t5 else 0
 
   cout_T1:
     type: intention
-    function: 107.25466225891938 if t10 == "T1" else 68.4210844070883 if t11 == "T1" else 107.92661485129385 if t12 == "T1" else 0
+    function: 143.0 if t3 == "T1" else 165.0242406436097 if t4 == "T1" else 55.90169943749474 if t5 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 31.278612105966968 if t10 == "T2" else 98.45851211248304 if t11 == "T2" else 58.46760446143581 if t12 == "T2" else 0
+    function: 108.90362712049586 if t3 == "T2" else 188.52055590836773 if t4 == "T2" else 128.69343417595164 if t5 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 51.86209062333197 if t10 == "T3" else 33.91270911242517 if t11 == "T3" else 23.739408855792934 if t12 == "T3" else 0
+    function: 173.4041521994211 if t3 == "T3" else 105.32331175955302 if t4 == "T3" else 83.21658488546619 if t5 == "T3" else 0
 
 agents:
-  t10:
+  t3:
     capacity: 1
-  t11:
+  t4:
     capacity: 1
-  t12:
+  t5:
     capacity: 1
