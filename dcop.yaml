@@ -9,66 +9,66 @@ domains:
       - T3
 
 variables:
-  t3:
+  t15:
     domain: taxis
-  t4:
+  t16:
     domain: taxis
-  t5:
+  t17:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t3
+    variables: t15
     values:
-      143.0: T1
-      108.90362712049586: T2
-      173.4041521994211: T3
+      129.1876543167421: T1
+      142.56002338521364: T2
+      58.60034129593445: T3
 
   pref_2:
     type: extensional
-    variables: t4
+    variables: t16
     values:
-      165.0242406436097: T1
-      188.52055590836773: T2
-      105.32331175955302: T3
+      50.596948259094816: T1
+      8.457004963079013: T2
+      109.63576058932597: T3
 
   pref_3:
     type: extensional
-    variables: t5
+    variables: t17
     values:
-      55.90169943749474: T1
-      128.69343417595164: T2
-      83.21658488546619: T3
+      63.018748087672655: T1
+      120.42713382684647: T2
+      78.77182237323191: T3
 
-  different_t3_t4:
+  different_t15_t16:
     type: intention
-    function: 1000 if t3 == t4 else 0
+    function: 1000 if t15 == t16 else 0
 
-  different_t3_t5:
+  different_t15_t17:
     type: intention
-    function: 1000 if t3 == t5 else 0
+    function: 1000 if t15 == t17 else 0
 
-  different_t4_t5:
+  different_t16_t17:
     type: intention
-    function: 1000 if t4 == t5 else 0
+    function: 1000 if t16 == t17 else 0
 
   cout_T1:
     type: intention
-    function: 143.0 if t3 == "T1" else 165.0242406436097 if t4 == "T1" else 55.90169943749474 if t5 == "T1" else 0
+    function: 129.1876543167421 if t15 == "T1" else 50.596948259094816 if t16 == "T1" else 63.018748087672655 if t17 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 108.90362712049586 if t3 == "T2" else 188.52055590836773 if t4 == "T2" else 128.69343417595164 if t5 == "T2" else 0
+    function: 142.56002338521364 if t15 == "T2" else 8.457004963079013 if t16 == "T2" else 120.42713382684647 if t17 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 173.4041521994211 if t3 == "T3" else 105.32331175955302 if t4 == "T3" else 83.21658488546619 if t5 == "T3" else 0
+    function: 58.60034129593445 if t15 == "T3" else 109.63576058932597 if t16 == "T3" else 78.77182237323191 if t17 == "T3" else 0
 
 agents:
-  t3:
+  t15:
     capacity: 1
-  t4:
+  t16:
     capacity: 1
-  t5:
+  t17:
     capacity: 1

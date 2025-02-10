@@ -10,7 +10,7 @@ import copy
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 pygame.init()
 
-# from generate_yaml import *
+from generate_yaml import *
 # from pydcop.algorithms import dsa
 # from pydcop.dcop.yamldcop import *
 from task_class import *
@@ -145,14 +145,13 @@ def assign_tasks_with_dsa(taxis, tasks, task_cost):
         )
         str_results = result.stdout
         
-        print(str_results)
+        
         
         try:
             results_dict = json.loads(str_results)
             assignments = results_dict.get("assignment", {})
             
-            print(assignments)
-                     
+         
             return assignments
               
             
@@ -314,13 +313,6 @@ def lance_simulation(tasks, algo, all_new_tasks):
 
         pygame.display.flip()
         clock.tick(FPS)
-    
-    
-    
-    
-    
-    
-    
       
 
 def main():
@@ -372,14 +364,14 @@ def main():
     
     # ------------------- Simulation avec DSA -------------------   
     
-    # print("Simulation avec DSA")
-    lance_simulation(tasks, "dpop", all_new_tasks)
+    print("Simulation avec DSA")
+    lance_simulation(tasks, "dsa", all_new_tasks)
     
     
     # # ------------------- Simulation avec DPOP -------------------
     
-    # print("Simulation avec DPOP")
-    #lance_simulation(task_copy, "dsa", all_new_tasks_copy)
+    print("Simulation avec DPOP")
+    lance_simulation(task_copy, "dpop", all_new_tasks_copy)
     
     
     
