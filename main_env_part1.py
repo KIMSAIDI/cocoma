@@ -26,8 +26,7 @@ def main():
     tasks = [
         Task(
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            f"t{i+1}"
+            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
         )
         for i in range(NUM_NEW_TASKS_MIN)
     ]
@@ -52,8 +51,7 @@ def main():
                 tasks.append(
                     Task(
                         (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                        f"t{len(tasks)+1}"
+                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
                     )
                 )
 

@@ -18,11 +18,6 @@ def bid_for_task(taxi, task, pos):
         return distance
 
 def PSI(taxis, tasks):
-    # Vérifier les tâches disponibles pour chaque taxi
-    for t in taxis:
-        available_tasks = [task for task in tasks if not task.taken]
-        t.check_task3(available_tasks)
-
     # Collecte des enchères de tous les taxis
     all_bids = []
     for taxi in taxis:
@@ -41,7 +36,7 @@ def PSI(taxis, tasks):
             for t in taxis:
                 if t.has_task(task):
                     t.remove_task(task)
-            winning_taxi.path.append(task)
+            winning_taxi.assign_task(task, ordering=True)
             task.allocate()
 
 def SSI(taxis, tasks):
