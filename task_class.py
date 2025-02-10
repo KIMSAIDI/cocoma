@@ -8,6 +8,11 @@ from utils import *
 # Class des Tâches
 class Task:
     nb_tasks = 0
+    waiting_time_sum = 0
+    waiting_time_std = 0
+    waiting_time_min = float('inf')
+    waiting_time_max = 0
+
     def __init__(self, start, end):
         self.id = Task.nb_tasks
         Task.nb_tasks += 1
@@ -36,7 +41,11 @@ class Task:
 
 
     def take(self):
-        self.taken = True
+        if not self.taken:
+            Task.waiting_time_sum += self.waiting_time
+            Task.waiting_time_max = max(Task.waiting_time_max, self.waiting_time)
+            Task.waiting_time_min = min(Task.waiting_time_min, self.waiting_time)
+            self.taken = True
 
     def complete(self):
         self.completed = True

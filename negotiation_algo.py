@@ -128,6 +128,42 @@ def ssi_auction(taxis, tasks, heuristic="prim"):
             best_taxi.assign_task(task, ordering=True)  # Assigner la tâche au meilleur taxi
             task.allocate()  # Marquer la tâche comme allouée
 
+def ssi_auction_with_regret(taxis, tasks, heuristic="prim"):
+    """
+    Implémente le Regret-Clearing Sequential Single-Item Auctions (SSI).
+    
+    taxis : liste des taxis
+    tasks : liste des tâches disponibles
+    heuristic : "prim" ou "insertion" pour choisir la stratégie d'affectation.
+    """
+    unassigned_tasks = tasks[:]  # Copie des tâches restantes
+
+    while unassigned_tasks:
+        # Calcul des regrets pour chaque tâche
+        task_regrets = []
+
+        for task in unassigned_tasks:
+            best_taxi, best_cost, second_best_cost = find_best_and_second_best_bid(taxis, task, heuristic)
+            regret = second_best_cost - best_cost  # Calcul du regret
+
+            if best_taxi:
+                task_regrets.append((task, best_taxi, best_cost, regret))
+
+        # Trier les tâches par regret décroissant
+        task_regrets.sort(key=lambda x: x[3], reverse=True)
+
+        if not task_regrets:
+            break  # Plus aucune tâche attribuable
+
+        # Prendre la tâche avec le plus grand regret
+        selected_task, winning_taxi, best_cost, regret = task_regrets[0]
+
+        # Assigner la tâche au meilleur taxi
+        winning_taxi.assign_task(selected_task, ordering=True)
+        selected_task.allocate()
+        unassigned_tasks.remove(selected_task)
+
+
 def evaluate_cost(taxi, task, heuristic):
     """
     Évalue le coût d'ajout d'une tâche à un taxi selon l'heuristique choisie.
@@ -167,3 +203,28 @@ def insertion_cost(taxi, task):
             best_increase = cost
 
     return best_increase
+
+def find_best_and_second_best_bid(taxis, task, heuristic):
+    """
+    Trouve le meilleur et le deuxième meilleur taxi pour une tâche donnée.
+    
+    Retourne :
+    - best_taxi : le taxi avec la meilleure offre
+    - best_cost : coût de l’offre du meilleur taxi
+    - second_best_cost : coût de l’offre du second meilleur taxi
+    """
+    best_taxi = None
+    best_cost = float("inf")
+    second_best_cost = float("inf")
+
+    for taxi in taxis:
+        cost = evaluate_cost(taxi, task, heuristic)
+
+        if cost < best_cost:
+            second_best_cost = best_cost  # L’ancien meilleur devient le second meilleur
+            best_cost = cost
+            best_taxi = taxi
+        elif cost < second_best_cost:
+            second_best_cost = cost  # Mise à jour du second meilleur coût
+
+    return best_taxi, best_cost, second_best_cost

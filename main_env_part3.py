@@ -59,7 +59,12 @@ def main():
                 )
 
             available_tasks = [task for task in tasks if not task.taken and not task.allocated]
-            ssi_auction(taxis, available_tasks, "insertion")
+            # ssi_auction(taxis, available_tasks, "insertion")
+            ssi_auction_with_regret(taxis, available_tasks, "insertion")
+
+            print("Waiting time mean: ", Task.waiting_time_sum / Task.nb_tasks)
+            print("Waiting time max: ", Task.waiting_time_max)
+            print("Waiting time min: ", Task.waiting_time_min)
 
 
         # Déplacement des taxis
