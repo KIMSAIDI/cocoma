@@ -20,6 +20,8 @@ class Taxi:
         self.destination = None
         self.task_started = False
         self.speed = 1
+        self.start_pos = position
+        self.total_distance = 0
 
     def __str__(self):
         return f"Taxi {self.name}"
@@ -75,15 +77,9 @@ class Taxi:
                 self.all_tasks.remove(task)
                 tasks_changed = True
 
-        # if tasks_changed:
-            # self.path = self.all_tasks.copy()
-            # Partie 1
-            # self.path = greedy_task_ordering(self.position, self.all_tasks)
-            # Partie 3
-            # Les tâches sont maintenant attribuées par enchères
-
-    def check_task3(self, tasks):
-        self.path = optimal_task_ordering(self.position, self.path)
+        if tasks_changed:
+            self.path = self.all_tasks.copy()
+            self.path = greedy_task_ordering(self.position, self.all_tasks)
 
     def has_task(self, task):
         return task in self.path
@@ -100,12 +96,16 @@ class Taxi:
             self.current_task.complete()
             self.current_task = None
             self.destination = None
+            self.total_distance += distance(self.start_pos, self.position)
+            self.start_pos = self.position
 
         if self.path: # si le taxi a une liste de tâches
             if self.position == self.path[0].start and not self.path[0].taken: # si le taxi est à la position de départ de la tâche et que la tâche n'est pas prise
                 self.current_task = self.path.pop(0) # on remove la tâche de sa liste
                 self.current_task.take()
                 self.destination = self.current_task.end # on met la destination à la fin de la tâche
+                self.total_distance += distance(self.start_pos, self.position)
+                self.start_pos = self.position
                 return
             
             self.destination = self.path[0].start # sinon on met la destination à la position de départ de la tâche

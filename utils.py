@@ -9,7 +9,7 @@ FPS = 60
 NUM_TAXIS = 5
 NUM_NEW_TASKS_MIN = 5
 NUM_NEW_TASKS_MAX = 5 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
-T = 12
+T = 3
 NUM_TOTAL_TASKS = 20
 
 # Échelle pour convertir les coordonnées

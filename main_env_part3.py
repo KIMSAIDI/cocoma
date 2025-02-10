@@ -13,6 +13,9 @@ from task_class import *
 from utils import *
 from negotiation_algo import *
 
+NUM_TASKS = 20
+NUM_NEW_TASKS = 5
+
 def main():
     # Initialisation de la fenêtre
     screen = pygame.display.set_mode((WINDOW_SIZE + INFO_PANEL_WIDTH, WINDOW_SIZE))
@@ -31,7 +34,11 @@ def main():
     #     for i in range(NUM_NEW_TASKS_MIN)
     # ]
 
+    num_groups = NUM_TASKS // NUM_NEW_TASKS
+
+    total_tasks = generate_tasks(num_tasks=NUM_TASKS, num_groups=num_groups, grid_size=GRID_SIZE)
     tasks = []
+    current_group = 0
 
     # Boucle principale
     running = True
@@ -39,7 +46,7 @@ def main():
     start = time.time()
     step = 0
 
-    while running:
+    while current_group < num_groups + 1 or len(tasks) > 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -49,22 +56,32 @@ def main():
 
         if step % (T * FPS)  == 0:
             start = time.time()
-            num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
-            for _ in range(num_new_tasks):
-                tasks.append(
-                    Task(
-                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                        (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
-                    )
-                )
+
+            # num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
+            # for _ in range(num_new_tasks):
+            #     tasks.append(
+            #         Task(
+            #             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
+            #             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
+            #         )
+            #     )
+
+            print("\nCurrent group: ", current_group)
+
+            new_tasks = total_tasks[current_group * (NUM_TASKS // num_groups): (current_group + 1) * (NUM_TASKS // num_groups)]
+            for task in new_tasks:
+                tasks.append(task)
+            current_group += 1
 
             available_tasks = [task for task in tasks if not task.taken and not task.allocated]
+            PSI(taxis, available_tasks)
             # ssi_auction(taxis, available_tasks, "insertion")
-            ssi_auction_with_regret(taxis, available_tasks, "insertion")
-
+            # ssi_auction_with_regret(taxis, available_tasks, "insertion")
+            
             print("Waiting time mean: ", Task.waiting_time_sum / Task.nb_tasks)
             print("Waiting time max: ", Task.waiting_time_max)
             print("Waiting time min: ", Task.waiting_time_min)
+            print("Total distance: ", sum([taxi.total_distance for taxi in taxis]))
 
 
         # Déplacement des taxis

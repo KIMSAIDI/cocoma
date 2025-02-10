@@ -1,7 +1,6 @@
 import pygame
+import random
 
-#from main_env import WHITE, GREEN, RED, BLUE, scale
-#from main_env_part1 import WHITE, GREEN, RED, BLUE, scale, draw_text
 from utils import *
 
 
@@ -57,3 +56,31 @@ class Task:
     def update(self):
         if not self.taken:
             self.waiting_time += 1
+
+def generate_tasks(num_tasks, num_groups, grid_size, seed=42):
+    """
+    Génère un ensemble de tâches de manière déterministe, organisées en groupes.
+
+    - num_tasks : nombre total de tâches à générer.
+    - num_groups : nombre de groupes dans lesquels les tâches sont réparties.
+    - grid_size : taille de la grille (pour positionner les tâches).
+    - seed : valeur fixe pour garantir la reproductibilité des tâches.
+    
+    Retourne une liste de tâches organisées par groupe.
+    """
+    random.seed(seed)  # Fixe le générateur pour garantir les mêmes tâches à chaque exécution
+
+    tasks = []
+    group_size = num_tasks // num_groups  # Nombre de tâches par groupe
+
+    for group in range(num_groups):
+        for i in range(group_size):
+            start_x = random.randint(0, grid_size)
+            start_y = random.randint(0, grid_size)
+            end_x = random.randint(0, grid_size)
+            end_y = random.randint(0, grid_size)
+
+            task = Task((start_x, start_y), (end_x, end_y))
+            tasks.append(task)
+
+    return tasks
