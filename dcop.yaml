@@ -7,68 +7,140 @@ domains:
       - T1
       - T2
       - T3
+      - T4
+      - T5
 
 variables:
-  t10:
+  t16:
     domain: taxis
-  t11:
+  t17:
     domain: taxis
-  t12:
+  t18:
+    domain: taxis
+  t19:
+    domain: taxis
+  t20:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t10
+    variables: t16
     values:
-      111.85255626972861: T1
-      112.07021253353027: T2
-      111.75987219948004: T3
+      43.35973106773561: T1
+      144.06231306333518: T2
+      117.30124234163466: T3
+      103.38151549384709: T4
+      105.40990282630834: T5
 
   pref_2:
     type: extensional
-    variables: t11
+    variables: t17
     values:
-      51.58800919361928: T1
-      51.466184477067976: T2
-      51.710505942812304: T3
+      36.90064551345731: T1
+      91.07105039943623: T2
+      63.96933543664611: T3
+      78.01928065332923: T4
+      53.085560493754556: T5
 
   pref_3:
     type: extensional
-    variables: t12
+    variables: t18
     values:
-      96.77765910446936: T1
-      96.39387286845607: T2
-      96.7207196437159: T3
+      83.89796449295964: T1
+      86.5068409336337: T2
+      65.74759366118533: T3
+      28.476647288147834: T4
+      54.34324146890234: T5
 
-  different_t10_t11:
-    type: intention
-    function: 1000 if t10 == t11 else 0
+  pref_4:
+    type: extensional
+    variables: t19
+    values:
+      152.77586958532677: T1
+      66.75360322114182: T2
+      80.2325073463631: T3
+      148.04800718478765: T4
+      91.61137900917375: T5
 
-  different_t10_t12:
-    type: intention
-    function: 1000 if t10 == t12 else 0
+  pref_5:
+    type: extensional
+    variables: t20
+    values:
+      81.11340389921388: T1
+      46.389488327311504: T2
+      19.927587308508123: T3
+      59.81133939496556: T4
+      7.736994867966048: T5
 
-  different_t11_t12:
+  different_t16_t17:
     type: intention
-    function: 1000 if t11 == t12 else 0
+    function: 1000 if t16 == t17 else 0
+
+  different_t16_t18:
+    type: intention
+    function: 1000 if t16 == t18 else 0
+
+  different_t16_t19:
+    type: intention
+    function: 1000 if t16 == t19 else 0
+
+  different_t16_t20:
+    type: intention
+    function: 1000 if t16 == t20 else 0
+
+  different_t17_t18:
+    type: intention
+    function: 1000 if t17 == t18 else 0
+
+  different_t17_t19:
+    type: intention
+    function: 1000 if t17 == t19 else 0
+
+  different_t17_t20:
+    type: intention
+    function: 1000 if t17 == t20 else 0
+
+  different_t18_t19:
+    type: intention
+    function: 1000 if t18 == t19 else 0
+
+  different_t18_t20:
+    type: intention
+    function: 1000 if t18 == t20 else 0
+
+  different_t19_t20:
+    type: intention
+    function: 1000 if t19 == t20 else 0
 
   cout_T1:
     type: intention
-    function: 111.85255626972861 if t10 == "T1" else 51.58800919361928 if t11 == "T1" else 96.77765910446936 if t12 == "T1" else 0
+    function: 43.35973106773561 if t16 == "T1" else 36.90064551345731 if t17 == "T1" else 83.89796449295964 if t18 == "T1" else 152.77586958532677 if t19 == "T1" else 81.11340389921388 if t20 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 112.07021253353027 if t10 == "T2" else 51.466184477067976 if t11 == "T2" else 96.39387286845607 if t12 == "T2" else 0
+    function: 144.06231306333518 if t16 == "T2" else 91.07105039943623 if t17 == "T2" else 86.5068409336337 if t18 == "T2" else 66.75360322114182 if t19 == "T2" else 46.389488327311504 if t20 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 111.75987219948004 if t10 == "T3" else 51.710505942812304 if t11 == "T3" else 96.7207196437159 if t12 == "T3" else 0
+    function: 117.30124234163466 if t16 == "T3" else 63.96933543664611 if t17 == "T3" else 65.74759366118533 if t18 == "T3" else 80.2325073463631 if t19 == "T3" else 19.927587308508123 if t20 == "T3" else 0
+
+  cout_T4:
+    type: intention
+    function: 103.38151549384709 if t16 == "T4" else 78.01928065332923 if t17 == "T4" else 28.476647288147834 if t18 == "T4" else 148.04800718478765 if t19 == "T4" else 59.81133939496556 if t20 == "T4" else 0
+
+  cout_T5:
+    type: intention
+    function: 105.40990282630834 if t16 == "T5" else 53.085560493754556 if t17 == "T5" else 54.34324146890234 if t18 == "T5" else 91.61137900917375 if t19 == "T5" else 7.736994867966048 if t20 == "T5" else 0
 
 agents:
-  t10:
+  t16:
     capacity: 1
-  t11:
+  t17:
     capacity: 1
-  t12:
+  t18:
+    capacity: 1
+  t19:
+    capacity: 1
+  t20:
     capacity: 1

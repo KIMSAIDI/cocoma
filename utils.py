@@ -5,12 +5,12 @@ GRID_SIZE = 200
 WINDOW_SIZE = 800
 INFO_PANEL_WIDTH = 300
 TAXI_RADIUS = 5
-FPS = 15
+FPS = 60
 NUM_TAXIS = 5
 NUM_NEW_TASKS_MIN = 5
 NUM_NEW_TASKS_MAX = 5 # Si <= à NUM_NEW_TASKS_MIN le nombre de tâches générées sera de NUM_NEW_TASKS_MIN
 T = 12
-NUM_TOTAL_TASKS = 12
+NUM_TOTAL_TASKS = 20
 
 # Échelle pour convertir les coordonnées
 scale = WINDOW_SIZE / GRID_SIZE
