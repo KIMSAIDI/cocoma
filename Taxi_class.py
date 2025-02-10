@@ -117,4 +117,17 @@ class Taxi:
         # self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
         # self.destination = (self.position[0] + x_noise, self.position[1] + y_noise)
 
+    def compute_path_cost(self, path):
+        cost = distance(self.position, path[0].start)
+        for i in range(len(path) - 1):
+            cost += distance(path[i].start, path[i].end)
+            cost += distance(path[i].end, path[i+1].start)
+        cost += distance(path[-1].start, path[-1].end)  # distance de la dernière tâche à la destination finale
+        return cost
+    
+    def assign_task(self, task, ordering=False):
+        self.path.append(task)
+        if ordering:
+            self.path = optimal_task_ordering(self.position, self.path)
+
     
