@@ -8,11 +8,10 @@ from utils import *
 class Task:
     nb_tasks = 0
     waiting_time_sum = 0
-    waiting_time_std = 0
     waiting_time_min = float('inf')
     waiting_time_max = 0
 
-    def __init__(self, start, end, name):
+    def __init__(self, start, end):
         self.id = Task.nb_tasks
         Task.nb_tasks += 1
         self.start = start
@@ -22,7 +21,6 @@ class Task:
         self.taken = False
         self.completed = False
         self.waiting_time = 0
-        self.name = name
 
     def __str__(self):
         return f"Task {self.id}"

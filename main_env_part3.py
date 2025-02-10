@@ -34,18 +34,19 @@ def main():
     #     for i in range(NUM_NEW_TASKS_MIN)
     # ]
 
+
     num_groups = NUM_TASKS // NUM_NEW_TASKS
 
     total_tasks = generate_tasks(num_tasks=NUM_TASKS, num_groups=num_groups, grid_size=GRID_SIZE)
     tasks = []
     current_group = 0
 
-    # Boucle principale
     running = True
     clock = pygame.time.Clock()
     start = time.time()
     step = 0
 
+    # Boucle principale
     while current_group < num_groups + 1 or len(tasks) > 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -57,15 +58,6 @@ def main():
         if step % (T * FPS)  == 0:
             start = time.time()
 
-            # num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
-            # for _ in range(num_new_tasks):
-            #     tasks.append(
-            #         Task(
-            #             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            #             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
-            #         )
-            #     )
-
             print("\nCurrent group: ", current_group)
 
             new_tasks = total_tasks[current_group * (NUM_TASKS // num_groups): (current_group + 1) * (NUM_TASKS // num_groups)]
@@ -74,7 +66,7 @@ def main():
             current_group += 1
 
             available_tasks = [task for task in tasks if not task.taken and not task.allocated]
-            PSI(taxis, available_tasks)
+            psi_auction(taxis, available_tasks)
             # ssi_auction(taxis, available_tasks, "insertion")
             # ssi_auction_with_regret(taxis, available_tasks, "insertion")
             

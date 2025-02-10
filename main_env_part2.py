@@ -2,7 +2,7 @@ import os
 import pygame
 import random
 import time
-import yaml
+# import yaml
 import subprocess
 import json
 import copy
@@ -13,9 +13,9 @@ import copy
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 pygame.init()
 
-from generate_yaml import *
-from pydcop.algorithms import dsa
-from pydcop.dcop.yamldcop import *
+# from generate_yaml import *
+# from pydcop.algorithms import dsa
+# from pydcop.dcop.yamldcop import *
 from task_class import *
 
 
@@ -317,6 +317,9 @@ def main():
         )
         for i in range(NUM_NEW_TASKS_MIN)   
     ]
+
+    for task in tasks:
+        print(task.name)
     
     task_copy = copy.deepcopy(tasks) # copy pour le deuxième algo
     
@@ -352,13 +355,13 @@ def main():
     # ------------------- Simulation avec DSA -------------------   
     
     print("Simulation avec DSA")
-    lance_simulation(tasks, "dsa", all_new_tasks)
+    # lance_simulation(tasks, "dsa", all_new_tasks)
     
     
     # ------------------- Simulation avec DPOP -------------------
     
     print("Simulation avec DPOP")
-    lance_simulation(task_copy, "dpop", all_new_tasks_copy)
+    # lance_simulation(task_copy, "dpop", all_new_tasks_copy)
     
     
     
