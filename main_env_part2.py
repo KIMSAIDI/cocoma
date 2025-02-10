@@ -7,9 +7,6 @@ import subprocess
 import json
 import copy
 
-
-
-
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 pygame.init()
 
@@ -32,6 +29,12 @@ class Taxi2:
         self.destination = None
         self.task_started = False
         self.speed = 1
+        
+    def __str__(self):
+        return f"Taxi {self.name}"
+
+    def __repr__(self):
+        return f"Taxi {self.name}"
 
     def update(self):
         self.update_task()
@@ -89,7 +92,7 @@ class Taxi2:
         # Si le taxi n'a plus de tâche à effectuer
         x_noise = random.uniform(-0.5, 0.5)
         y_noise = random.uniform(-0.5, 0.5)
-        self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
+        #self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
        
 
 
@@ -137,13 +140,18 @@ def assign_tasks_with_dsa(taxis, tasks, task_cost):
     try:
         result = subprocess.run(
             ["pydcop", "--timeout", "2", "solve", "--algo", "dsa", "dcop.yaml"],
+            #["pydcop", "solve", "--algo", "dsa", "dcop.yaml"],
             capture_output=True, text=True, check=True
         )
         str_results = result.stdout
         
+        print(str_results)
+        
         try:
             results_dict = json.loads(str_results)
             assignments = results_dict.get("assignment", {})
+            
+            print(assignments)
                      
             return assignments
               
@@ -169,9 +177,12 @@ def lance_simulation(tasks, algo, all_new_tasks):
         for i in range(NUM_TAXIS)
     ]
     
+    
+    
     all_tasks_count = NUM_NEW_TASKS_MIN
     total_resolution_dsa_time = 0
     total_resolution_dpop_time = 0
+    total_cout = 0
     
     # Boucle principale
     running = True
@@ -201,12 +212,16 @@ def lance_simulation(tasks, algo, all_new_tasks):
         
     
     # Assigner les tâches aux taxis
+    
     for taxi in taxis:
         for task_name, taxi_name in assignments.items():
             if taxi_name == taxi.name:
                 for task in tasks:
-                    if task.name == task_name:
-                        taxi.path.append(task)                       
+                    if task.id == task_name:
+                        taxi.path.append(task) 
+                        total_cout += calculate_cost(taxi.position, task.start)
+                        # Plus on ajoute la longueur de la tache
+                        total_cout += calculate_cost(task.start, task.end)                      
                         break
     
     # on remet à 0 le calcul des couts des taches
@@ -230,6 +245,7 @@ def lance_simulation(tasks, algo, all_new_tasks):
             new_tasks = all_new_tasks[cpt]
             tasks.extend(new_tasks)
             
+
             # on met à jour le nombre total de taches
             all_tasks_count += len(new_tasks)
             
@@ -258,8 +274,10 @@ def lance_simulation(tasks, algo, all_new_tasks):
                 for task_name, taxi_name in assignments.items():
                     if taxi_name == taxi.name:
                         for task in tasks:
-                            if task.name == task_name:
-                                taxi.path.append(task)                       
+                            if task.id == task_name:
+                                taxi.path.append(task) 
+                                total_cout += calculate_cost(taxi.position, task.start) 
+                                total_cout += calculate_cost(task.start, task.end)                       
                                 break
             
             # compteur pour les nouvelles taches
@@ -289,6 +307,7 @@ def lance_simulation(tasks, algo, all_new_tasks):
                 print(f"Temps total pour la résolution DPOP: {total_resolution_dpop_time:.2f} secondes")
             elif algo == "dsa":
                 print(f"Temps total pour la résolution DSA: {total_resolution_dsa_time:.2f} secondes")
+            print(f"Coût total: {total_cout:.2f}")  
             running = False
             
             
@@ -312,40 +331,39 @@ def main():
     tasks = [
         Task(
             (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-            f"t{i+1}"
+            (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
         )
         for i in range(NUM_NEW_TASKS_MIN)   
     ]
-
-    for task in tasks:
-        print(task.name)
     
+    for task in tasks:
+        task.id = 't' + str(task.id)
+        
     task_copy = copy.deepcopy(tasks) # copy pour le deuxième algo
     
+
     
     # ----------------- Generation taches pour tout les T temps -----------------
     all_new_tasks = []
-    task_counter = len(tasks) + 1
     
     for index in range(0, NUM_TOTAL_TASKS - NUM_NEW_TASKS_MIN):
         # Pour tout les T pas de temps, on initialise déjà les taches pour chaque algo
         num_new_tasks = random.randint(NUM_NEW_TASKS_MIN, NUM_NEW_TASKS_MAX)
         new_task = []
         for i in range(num_new_tasks):
-            task_name = f"t{task_counter}"
-
+            
             new_task.append(
                 Task(
                     (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                    (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE)),
-                    # on s'assure que les noms sont uniques et avec compteur
-                    task_name
+                    (random.randint(0, GRID_SIZE), random.randint(0, GRID_SIZE))
+                   
 
                 )
+                
             )
           
-            task_counter += 1 
+        for task in new_task:
+            task.id = 't' + str(task.id) 
                      
         all_new_tasks.append(new_task)
     
@@ -354,14 +372,14 @@ def main():
     
     # ------------------- Simulation avec DSA -------------------   
     
-    print("Simulation avec DSA")
-    # lance_simulation(tasks, "dsa", all_new_tasks)
+    # print("Simulation avec DSA")
+    lance_simulation(tasks, "dpop", all_new_tasks)
     
     
-    # ------------------- Simulation avec DPOP -------------------
+    # # ------------------- Simulation avec DPOP -------------------
     
-    print("Simulation avec DPOP")
-    # lance_simulation(task_copy, "dpop", all_new_tasks_copy)
+    # print("Simulation avec DPOP")
+    #lance_simulation(task_copy, "dsa", all_new_tasks_copy)
     
     
     

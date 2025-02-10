@@ -21,6 +21,7 @@ class Task:
         self.taken = False
         self.completed = False
         self.waiting_time = 0
+       
 
     def __str__(self):
         return f"Task {self.id}"
