@@ -1,4 +1,4 @@
-name: dcop
+name: Taxi Task Allocation Problem
 objective: min
 
 domains:
@@ -9,118 +9,66 @@ domains:
       - T3
 
 variables:
-  t1:
+  t10:
     domain: taxis
-  t2:
+  t11:
     domain: taxis
-  t3:
-    domain: taxis
-  t4:
-    domain: taxis
-  t5:
+  t12:
     domain: taxis
 
 constraints:
   pref_1:
     type: extensional
-    variables: t1
+    variables: t10
     values:
-      51.088159097779204: T1
-      42.05948168962618: T2
-      29.410882339705484: T3
+      111.85255626972861: T1
+      112.07021253353027: T2
+      111.75987219948004: T3
 
   pref_2:
     type: extensional
-    variables: t2
+    variables: t11
     values:
-      119.63277142990545: T1
-      111.30588483993108: T2
-      101.71037311896953: T3
+      51.58800919361928: T1
+      51.466184477067976: T2
+      51.710505942812304: T3
 
   pref_3:
     type: extensional
-    variables: t3
+    variables: t12
     values:
-      89.00561780022652: T1
-      139.6030085635693: T2
-      86.40023148117139: T3
+      96.77765910446936: T1
+      96.39387286845607: T2
+      96.7207196437159: T3
 
-  pref_4:
-    type: extensional
-    variables: t4
-    values:
-      80.62257748298549: T1
-      164.57521077003062: T2
-      94.57801012920498: T3
-
-  pref_5:
-    type: extensional
-    variables: t5
-    values:
-      40.26164427839479: T1
-      52.3450093132096: T2
-      22.627416997969522: T3
-
-  different_t1_t2:
+  different_t10_t11:
     type: intention
-    function: 1000 if t1 == t2 else 0
+    function: 1000 if t10 == t11 else 0
 
-  different_t1_t3:
+  different_t10_t12:
     type: intention
-    function: 1000 if t1 == t3 else 0
+    function: 1000 if t10 == t12 else 0
 
-  different_t1_t4:
+  different_t11_t12:
     type: intention
-    function: 1000 if t1 == t4 else 0
-
-  different_t1_t5:
-    type: intention
-    function: 1000 if t1 == t5 else 0
-
-  different_t2_t3:
-    type: intention
-    function: 1000 if t2 == t3 else 0
-
-  different_t2_t4:
-    type: intention
-    function: 1000 if t2 == t4 else 0
-
-  different_t2_t5:
-    type: intention
-    function: 1000 if t2 == t5 else 0
-
-  different_t3_t4:
-    type: intention
-    function: 1000 if t3 == t4 else 0
-
-  different_t3_t5:
-    type: intention
-    function: 1000 if t3 == t5 else 0
-
-  different_t4_t5:
-    type: intention
-    function: 1000 if t4 == t5 else 0
+    function: 1000 if t11 == t12 else 0
 
   cout_T1:
     type: intention
-    function: 51.088159097779204 if t1 == "T1" else 119.63277142990545 if t2 == "T1" else 89.00561780022652 if t3 == "T1" else 80.62257748298549 if t4 == "T1" else 40.26164427839479 if t5 == "T1" else 0
+    function: 111.85255626972861 if t10 == "T1" else 51.58800919361928 if t11 == "T1" else 96.77765910446936 if t12 == "T1" else 0
 
   cout_T2:
     type: intention
-    function: 42.05948168962618 if t1 == "T2" else 111.30588483993108 if t2 == "T2" else 139.6030085635693 if t3 == "T2" else 164.57521077003062 if t4 == "T2" else 52.3450093132096 if t5 == "T2" else 0
+    function: 112.07021253353027 if t10 == "T2" else 51.466184477067976 if t11 == "T2" else 96.39387286845607 if t12 == "T2" else 0
 
   cout_T3:
     type: intention
-    function: 29.410882339705484 if t1 == "T3" else 101.71037311896953 if t2 == "T3" else 86.40023148117139 if t3 == "T3" else 94.57801012920498 if t4 == "T3" else 22.627416997969522 if t5 == "T3" else 0
+    function: 111.75987219948004 if t10 == "T3" else 51.710505942812304 if t11 == "T3" else 96.7207196437159 if t12 == "T3" else 0
 
 agents:
-  t1:
+  t10:
     capacity: 1
-  t2:
+  t11:
     capacity: 1
-  t3:
-    capacity: 1
-  t4:
-    capacity: 1
-  t5:
+  t12:
     capacity: 1

@@ -8,45 +8,18 @@ import json
 import copy
 
 
+
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 pygame.init()
 
-# Paramètres
-GRID_SIZE = 200
-WINDOW_SIZE = 800
-TAXI_RADIUS = 5
-FPS = 60
-NUM_TAXIS = 3
-NUM_NEW_TASKS_MIN = 5
-NUM_NEW_TASKS_MAX = 5
-NUM_TOTAL_TASKS = 20
-T = 8
-  # Limite le nombre de tâches non prises
-scale = WINDOW_SIZE / GRID_SIZE
-
-
-# Couleurs
-WHITE = (247, 247, 255)
-GREY = (50, 60, 68)
-YELLOW = (255, 217, 25)
-RED = (199, 0, 57)
-GREEN = (76, 173, 139)
-BLUE = (57, 88, 146)
-
-# Police
-FONT = pygame.font.Font(None, 24)
-
-#from Taxi_class import *
-from task_class import *
 from generate_yaml import *
 from pydcop.algorithms import dsa
 from pydcop.dcop.yamldcop import *
+from task_class import *
 
 
-# Fonction pour dessiner du texte
-def draw_text(screen, text, x, y, color):
-    text_surface = FONT.render(text, True, color)
-    screen.blit(text_surface, (x, y))
+
 
 # Class des Taxis
 class Taxi2:
@@ -126,9 +99,9 @@ class Taxi2:
 def assign_tasks_with_dpop(taxis, tasks, task_cost):
     
     generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
-    with open("dcop.yaml", "r", encoding="utf-8") as f:
-        dcop_str = f.read()  # Lire le contenu du fichier
-    dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
+    # with open("dcop.yaml", "r", encoding="utf-8") as f:
+    #     dcop_str = f.read()  # Lire le contenu du fichier
+    # dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
     try:
         result = subprocess.run(
             ["pydcop", "solve", "--algo", "dpop", "dcop.yaml"],
@@ -158,9 +131,9 @@ def assign_tasks_with_dpop(taxis, tasks, task_cost):
 def assign_tasks_with_dsa(taxis, tasks, task_cost):
     
     generate_yaml_file(taxis, tasks, task_cost, "dcop.yaml")
-    with open("dcop.yaml", "r", encoding="utf-8") as f:
-        dcop_str = f.read()  # Lire le contenu du fichier
-    dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
+    # with open("dcop.yaml", "r", encoding="utf-8") as f:
+    #     dcop_str = f.read()  # Lire le contenu du fichier
+    # dcop = load_dcop(dcop_str=dcop_str, main_dir="yaml")
     try:
         result = subprocess.run(
             ["pydcop", "--timeout", "2", "solve", "--algo", "dsa", "dcop.yaml"],
@@ -188,7 +161,7 @@ def assign_tasks_with_dsa(taxis, tasks, task_cost):
 def lance_simulation(tasks, algo, all_new_tasks):
     
     # Initialisation de la fenêtre
-    screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
+    screen = pygame.display.set_mode((WINDOW_SIZE + INFO_PANEL_WIDTH, WINDOW_SIZE))
     pygame.display.set_caption("Simulation de taxis")
     
     taxis = [
@@ -205,6 +178,8 @@ def lance_simulation(tasks, algo, all_new_tasks):
     task_cost = {}
     clock = pygame.time.Clock()
     start = time.time()
+    
+    temp_total = time.time()
     
     # pour chaque taxi, on calcul le coùut associé à chaque tâche
     for taxi in taxis:
@@ -303,10 +278,13 @@ def lance_simulation(tasks, algo, all_new_tasks):
                 continue
             task.draw(screen)
             
+            
+        draw_task_allocations(screen, taxis, WINDOW_SIZE)
+            
         if all_tasks_count == NUM_TOTAL_TASKS and tasks == []:
             
             end_time = time.time()
-            print(f"Temps total pour la qualités des solutions: {end_time - start:.2f} secondes")
+            print(f"Temps total pour la qualités des solutions: {end_time - temp_total:.2f} secondes")
             if algo == "dpop":
                 print(f"Temps total pour la résolution DPOP: {total_resolution_dpop_time:.2f} secondes")
             elif algo == "dsa":
@@ -396,4 +374,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
