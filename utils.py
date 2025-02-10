@@ -62,3 +62,6 @@ def draw_task_allocations(screen, taxis, start_x):
             draw_text(screen, "Aucune tâche à venir", WINDOW_SIZE + 30, y_offset, RED)
 
         y_offset += 30  # Espacement entre les taxis
+
+def distance(pos1, pos2):
+    return ((pos2[0] - pos1[0])**2 + (pos2[1] - pos1[1])**2) ** 0.5

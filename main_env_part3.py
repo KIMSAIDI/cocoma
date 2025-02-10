@@ -58,7 +58,8 @@ def main():
                     )
                 )
 
-            PSI(taxis, tasks)
+            available_tasks = [task for task in tasks if not task.taken and not task.allocated]
+            ssi_auction(taxis, available_tasks, "insertion")
 
 
         # Déplacement des taxis
