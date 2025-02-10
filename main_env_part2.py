@@ -32,6 +32,12 @@ class Taxi2:
         self.destination = None
         self.task_started = False
         self.speed = 1
+        
+    def __str__(self):
+        return f"Taxi {self.name}"
+
+    def __repr__(self):
+        return f"Taxi {self.name}"
 
     def update(self):
         self.update_task()
@@ -89,7 +95,7 @@ class Taxi2:
         # Si le taxi n'a plus de tâche à effectuer
         x_noise = random.uniform(-0.5, 0.5)
         y_noise = random.uniform(-0.5, 0.5)
-        self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
+        #self.destination = (GRID_SIZE // 2 + x_noise, GRID_SIZE // 2 +  y_noise)
        
 
 
@@ -172,6 +178,7 @@ def lance_simulation(tasks, algo, all_new_tasks):
     all_tasks_count = NUM_NEW_TASKS_MIN
     total_resolution_dsa_time = 0
     total_resolution_dpop_time = 0
+    total_cout = 0
     
     # Boucle principale
     running = True
@@ -206,7 +213,10 @@ def lance_simulation(tasks, algo, all_new_tasks):
             if taxi_name == taxi.name:
                 for task in tasks:
                     if task.name == task_name:
-                        taxi.path.append(task)                       
+                        taxi.path.append(task) 
+                        total_cout += calculate_cost(taxi.position, task.start)
+                        # Plus on ajoute la longueur de la tache
+                        total_cout += calculate_cost(task.start, task.end)                      
                         break
     
     # on remet à 0 le calcul des couts des taches
@@ -259,7 +269,9 @@ def lance_simulation(tasks, algo, all_new_tasks):
                     if taxi_name == taxi.name:
                         for task in tasks:
                             if task.name == task_name:
-                                taxi.path.append(task)                       
+                                taxi.path.append(task) 
+                                total_cout += calculate_cost(taxi.position, task.start) 
+                                total_cout += calculate_cost(task.start, task.end)                       
                                 break
             
             # compteur pour les nouvelles taches
@@ -289,6 +301,7 @@ def lance_simulation(tasks, algo, all_new_tasks):
                 print(f"Temps total pour la résolution DPOP: {total_resolution_dpop_time:.2f} secondes")
             elif algo == "dsa":
                 print(f"Temps total pour la résolution DSA: {total_resolution_dsa_time:.2f} secondes")
+            print(f"Coût total: {total_cout:.2f}")  
             running = False
             
             
